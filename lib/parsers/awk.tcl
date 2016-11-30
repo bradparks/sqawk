@@ -9,7 +9,7 @@ namespace eval ::sqawk::parsers::awk {
     variable options {
         FS {}
         RS {}
-        fields auto
+        map auto
         trim none
     }
 }
@@ -110,7 +110,7 @@ proc ::sqawk::parsers::awk::map {fieldsAndSeps fieldMap} {
             }
             lappend columns [join [lrange $fieldsAndSeps $from $to] {}]
         } else {
-            error "unknown mapping: \"$mapping\""
+            error "invalid mapping: \"$mapping\""
         }
 
         incr currentColumn
@@ -153,7 +153,7 @@ proc ::sqawk::parsers::awk::parse {data options} {
     # Parse $args.
     set RS [dict get $options RS]
     set FS [dict get $options FS]
-    set fields [dict get $options fields]
+    set map [dict get $options map]
     set trim [dict get $options trim]
 
     # Split the raw data into records.
@@ -167,7 +167,7 @@ proc ::sqawk::parsers::awk::parse {data options} {
 
     # Split records into fields.
     set rows {}
-    if {($fields eq {auto})} {
+    if {($map eq {auto})} {
         foreach record $records {
             set record [::sqawk::parsers::awk::trim-record $record $trim]
             lappend rows [list $record {*}[::textutil::splitx $record $FS]]
@@ -177,7 +177,7 @@ proc ::sqawk::parsers::awk::parse {data options} {
             set record [::sqawk::parsers::awk::trim-record $record $trim]
             set columns [::sqawk::parsers::awk::map \
                     [::sqawk::parsers::awk::sepsplit $record $FS] \
-                    [::sqawk::parsers::awk::parseFieldMap $fields]]
+                    [::sqawk::parsers::awk::parseFieldMap $map]]
             lappend rows [list $record {*}$columns]
         }
     }

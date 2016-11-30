@@ -403,7 +403,7 @@ namespace eval ::sqawk::tests {
         variable merge2File
         sqawk-tcl -OFS - {
             select a1, a2, a3 from a
-        } {fields=1-2,3-4,5-6} $merge2File
+        } {map=1-2,3-4,5-6} $merge2File
     } -result "foo 1-foo 2-foo 3\nbar    4-bar    5-bar    6"
 
     tcltest::test field-mapping-3.2 {skip fields} \
@@ -412,7 +412,7 @@ namespace eval ::sqawk::tests {
         variable merge2File
         sqawk-tcl -OFS - {
             select a1, a2 from a
-        } {fields=3,6} $merge2File
+        } {map=3,6} $merge2File
     } -result "foo-3\nbar-6"
 
     tcltest::test field-mapping-3.3 {skip and merge fields} \
@@ -421,7 +421,7 @@ namespace eval ::sqawk::tests {
         variable merge2File
         sqawk-tcl -OFS - {
             select a1, a2 from a
-        } {fields=1-2,5-6} $merge2File
+        } {map=1-2,5-6} $merge2File
     } -result "foo 1-foo 3\nbar    4-bar    6"
 
     tcltest::test format-1.1 {CSV input} \
